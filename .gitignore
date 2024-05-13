@@ -3,5 +3,4 @@ dist/
 build/
 .idea
 
-.env.local
-.env.dev
+

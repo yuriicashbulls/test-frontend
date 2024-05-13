@@ -2,18 +2,41 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import {BrowserRouter} from "react-router-dom";
+import {ReactQueryDevtools} from 'react-query/devtools';
+import {QueryCache, QueryClient, QueryClientProvider} from 'react-query';
+
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    document.getElementById('root') as HTMLElement
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            keepPreviousData: true,
+            refetchOnMount: false,
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: true,
+            cacheTime: Infinity
+        }
+    },
+    queryCache: new QueryCache({
+        onError: (error, query) => {
+            // 🎉 only show error toasts if we already have data in the cache
+            // which indicates a failed background update
+            if (query.state.data !== undefined) {
+            }
+        }
+    })
+});
+
+root.render(
+    <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+            <App/>
+        </QueryClientProvider>
+    </BrowserRouter>
+);
+
+
